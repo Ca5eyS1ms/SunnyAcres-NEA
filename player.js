@@ -6,6 +6,8 @@ class Player{
         this.x = width / 2;  // sets the player in the middle of the canvas
         this.y = height / 2; 
         this.diameter = diameter;
+        this.speed = tileSize * 0.2;
+
     }
 
     draw(){
@@ -14,27 +16,58 @@ class Player{
     }//end of draw function
 
     movement(){
-        if (keyIsDown(LEFT_ARROW)){
-            this.x -= 1;
+        if (keyIsDown(65)){
+            this.x -= this.speed;
         }
-        if (keyIsDown(RIGHT_ARROW)){
-            this.x += 1;
+        if (keyIsDown(68)){
+            this.x += this.speed;
         }
-        if (keyIsDown(UP_ARROW)){
-            this.y -= 1;
+        if (keyIsDown(87)){
+            this.y -= this.speed;
         }
-        if (keyIsDown(DOWN_ARROW)){
-            this.y += 1;
+        if (keyIsDown(83)){
+            this.y += this.speed;
         }
     }//end of movement function   
 
 
-    handleMousePressed(){
+    handleMousePressed() {
+
+        // handles changing to farmland
+        let selectedItem = ui.items[ui.selectedSlot];
         let tileX = Math.floor(mouseX / tileSize);
         let tileY = Math.floor(mouseY / tileSize);
-
-        if (tileX >= 0 && tileX < map.cols && tileY >= 0 && tileY < map.rows){
-            map.tiles[tileY][tileX] = 'M';
+    
+        if (selectedItem === "hoe"){
+            if (tileX >= 0 && tileX < map.cols && tileY >= 0 && tileY < map.rows) { //checks if the mouse is within the canvas
+                let tile = map.tiles[tileY][tileX];
+        
+                
+                tile.type = 'M';
+                tile.hasRock = false;
+                tile.hasTree = false;
+        
+                console.log("Tile converted to farmland at:", tileX, tileY);
+            }
         }
-    }//end of mousePressed function
+
+        
+    } //end of handleMousePressed function
+
+    plantSeed(){
+        let selectedItem = ui.items[ui.selectedSlot];
+
+        if (selectedItem === "seeds"){
+            let seedType = ui.seedTypes[ui.currentSeed]; 
+            map.plantSeed(mouseX, mouseY, seedType);
+        }
+    }//end of plantSeed function
+
+    waterPlant(){
+        let selectedItem = ui.items[ui.selectedSlot];
+
+        if (selectedItem === "watering can"){
+            map.waterPlant(mouseX, mouseY);
+        }
+    } //end of waterPlant function
 } //end of player class
